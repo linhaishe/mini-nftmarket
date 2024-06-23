@@ -1,0 +1,42 @@
+.item-wrap {
+  border: 1px solid grey;
+  width: 200px;
+  height: max-content;
+  border-radius: 5px;
+
+  //   display: flex;
+}
+
+.avatar-img {
+  width: 200px;
+  height: 200px;
+  //   border: 1px solid #000;
+}
+
+.info-wrap {
+  padding: 0 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+
+  .user-info-img {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    border-radius: 100px;
+    border: 1px solid #000;
+  }
+}
+
+.action-btn {
+  height: 40px;
+  background: #000;
+  border-radius: 0 0 3px 3px;
+  margin-top: 5px;
+  color: #fff;
+  text-align: center;
+  line-height: 40px;
+}
