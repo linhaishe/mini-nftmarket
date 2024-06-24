@@ -1,5 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
+import { Connector, useConnect } from 'wagmi';
+
 import './index.scss';
+
+function WalletOptions() {
+  const { connectors, connect } = useConnect();
+
+  return connectors.map((connector) => (
+    <button key={connector.uid} onClick={() => connect({ connector })}>
+      {connector.name}
+    </button>
+  ));
+}
 
 function Nav() {
   return (
@@ -10,7 +22,7 @@ function Nav() {
         <div>Own</div>
         <div>Create</div>
       </div>
-      <div>wallet</div>
+      <WalletOptions />
     </div>
   );
 }
