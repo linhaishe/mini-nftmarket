@@ -5,17 +5,26 @@ async function main() {
   console.log('Account balance:', (await deployer.getBalance()).toString());
 
   // Get the ContractFactories and Signers here.
-  const erc20Token = await ethers.getContractFactory('cUSDT');
-  //   const Marketplace = await ethers.getContractFactory('Marketplace');
-  // deploy contracts
-  //   const marketplace = await Marketplace.deploy(1);
+  const erc20Token = await ethers.getContractFactory('SadMonkey');
+  const NFT = await ethers.getContractFactory('NFTM');
+  const Marketplace = await ethers.getContractFactory('Market');
 
+  // deploy contracts
   const _erc20Token = await erc20Token.deploy();
-  console.log('_erc20Token address', _erc20Token);
+  const _NFT = await NFT.deploy(deployer.address);
+
+  console.log('address111111', _erc20Token.address);
+  console.log('address22222', _NFT.address);
+
+  const _Marketplace = await Marketplace.deploy(
+    _erc20Token.address,
+    _NFT.address
+  );
 
   // Save copies of each contracts abi and address to the frontend.
-  //   saveFrontendFiles(marketplace, 'Marketplace');
-  saveFrontendFiles(_erc20Token, 'cUSDT');
+  saveFrontendFiles(_erc20Token, 'SadMonkey');
+  saveFrontendFiles(_NFT, 'NFTM');
+  saveFrontendFiles(_Marketplace, 'Market');
 }
 
 function saveFrontendFiles(contract, name) {

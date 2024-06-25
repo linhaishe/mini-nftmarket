@@ -10,10 +10,10 @@ contract NFTM is ERC721, ERC721Enumerable, Ownable {
 
     constructor(
         address initialOwner
-    ) ERC721("ihan's erc21", "NFTM") Ownable(initialOwner) {}
+    ) ERC721("lin's erc21", "NFTM") Ownable(initialOwner) {}
 
     function _baseURI() internal pure override returns (string memory) {
-        return "http://ihan/";
+        return "http://iLin/";
     }
 
     function safeMint(address to) public onlyOwner {

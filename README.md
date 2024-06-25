@@ -6,7 +6,7 @@
 
 `npx hardhat node`
 
-deploy contract on local
+deploy the contract on local
 
 `npx hardhat run src/backend/scripts/deploy.js --network localhost`
 
@@ -23,7 +23,7 @@ deploy contract on local
 
 `npx hardhat console --network localhost `
 
-is a interactive js enviroment for interacting with our contract and blockchain
+is an interactive js environment for interacting with our contract and blockchain
 
 ![](https://s2.loli.net/2024/06/24/PSW9sKYeGALxRgU.png)
 
