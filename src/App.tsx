@@ -14,6 +14,7 @@ import SadMonkeyAddress from './backend/contractsData/SadMonkey-address.json';
 import Nav from './components/Nav';
 import ItemCard from './components/ItemCard';
 import Home from './components/Home';
+import Create from './components/Create';
 
 import './App.css';
 
@@ -21,9 +22,11 @@ const queryClient = new QueryClient();
 
 function App() {
   // const { address } = useAccount();
+  const [nft, setNFT] = useState({});
+  const [marketplace, setMarketplace] = useState({});
 
   useEffect(() => {
-    const provider = new ethers.providers.Web3Provider(window!.ethereum);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     // Set signer
     const signer = provider.getSigner();
     const marketplace = new ethers.Contract(
@@ -31,8 +34,11 @@ function App() {
       MarketAbi.abi,
       signer
     );
-
+    const nft = new ethers.Contract(NFTMAddress.address, NFTMAbi.abi, signer);
+    setMarketplace(marketplace);
+    setNFT(nft);
     console.log('marketplace', marketplace);
+    console.log('nft', nft);
   }, []);
   return (
     <WagmiProvider config={config}>
@@ -40,7 +46,8 @@ function App() {
         <div>
           <Nav />
           {/* <ItemCard /> */}
-          <Home />
+          {/* <Home /> */}
+          <Create marketplace={marketplace} nft={nft} />
         </div>
       </QueryClientProvider>
     </WagmiProvider>

@@ -4,8 +4,9 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract NFTM is ERC721, ERC721Enumerable, Ownable {
+contract NFTM is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable {
     uint256 private _nextTokenId;
 
     constructor(
@@ -16,12 +17,24 @@ contract NFTM is ERC721, ERC721Enumerable, Ownable {
         return "http://iLin/";
     }
 
-    function safeMint(address to) public onlyOwner {
+    // create NFT
+    function safeMint(string calldata tokenURI) public onlyOwner {
         uint256 tokenId = _nextTokenId++;
-        _safeMint(to, tokenId);
+        _safeMint(msg.sender, tokenId);
+        _setTokenURI(tokenId, tokenURI);
+    }
+
+    function getNextTokenId() public view returns (uint256) {
+        return _nextTokenId;
     }
 
     // The following functions are overrides required by Solidity.
+
+    function tokenURI(
+        uint256 tokenId
+    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
 
     function _update(
         address to,
@@ -40,7 +53,12 @@ contract NFTM is ERC721, ERC721Enumerable, Ownable {
 
     function supportsInterface(
         bytes4 interfaceId
-    ) public view override(ERC721, ERC721Enumerable) returns (bool) {
+    )
+        public
+        view
+        override(ERC721, ERC721URIStorage, ERC721Enumerable)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 }
