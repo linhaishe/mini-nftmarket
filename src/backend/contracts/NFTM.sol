@@ -11,17 +11,17 @@ contract NFTM is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable {
 
     constructor(
         address initialOwner
-    ) ERC721("lin's erc21", "NFTM") Ownable(initialOwner) {}
+    ) ERC721("lin's erc21", "SadMonkey") Ownable(initialOwner) {}
 
     function _baseURI() internal pure override returns (string memory) {
         return "http://iLin/";
     }
 
     // create NFT
-    function safeMint(string calldata tokenURI) public onlyOwner {
+    function safeMint(string calldata tokenURIs) public onlyOwner {
         uint256 tokenId = _nextTokenId++;
         _safeMint(msg.sender, tokenId);
-        _setTokenURI(tokenId, tokenURI);
+        _setTokenURI(tokenId, tokenURIs);
     }
 
     function getNextTokenId() public view returns (uint256) {
