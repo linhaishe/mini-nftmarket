@@ -18,6 +18,14 @@ contract Market {
     Order[] public orders;
     mapping(uint256 => uint256) public idToOrderIndex; //token id to index in orders
 
+    event NFTTransfer(
+        uint256 tokenID,
+        address from,
+        address to,
+        string tokenURI,
+        uint256 price
+    );
+
     event Deal(address seller, address buyer, uint256 tokenId, uint256 price);
     event NewOrder(address seller, uint256 tokenId, uint256 price);
     event PriceChanged(
@@ -35,16 +43,34 @@ contract Market {
         erc721 = IERC721(_erc721);
     }
 
+    function listNFT(uint256 tokenID, uint256 price) public {
+        require(erc721.ownerOf(tokenID) == msg.sender, "Not the owner");
+        require(price > 0, "price must be greater than 0");
+        erc721.transferFrom(msg.sender, address(this), tokenID);
+        orderOfId[tokenID] = Order(msg.sender, tokenID, price);
+        emit NFTTransfer(tokenID, msg.sender, address(this), "", price);
+    }
+
     function buy(uint256 _tokenId) external {
         address seller = orderOfId[_tokenId].seller;
         address buyer = msg.sender;
         uint256 price = orderOfId[_tokenId].price;
+        uint256 allowance = erc20.allowance(buyer, address(this));
+        uint256 balance = erc20.balanceOf(buyer);
+        require(allowance >= price, "Not enough allowance");
+        require(balance >= price, "Not enough balance");
         //transferFrom代表market将钱由buyer转给seller，所以market需要被approve，market才能花a的钱，防止market私自花a的币
+        require(
+            erc20.allowance(buyer, address(this)) >= price,
+            "Not enough allowance"
+        );
+        require(erc20.balanceOf(buyer) >= price, "Not enough balance");
         require(
             erc20.transferFrom(buyer, seller, price),
             "transfer not successful"
         );
-        erc721.safeTransferFrom(address(this), buyer, _tokenId); //这里不会调用hook函数
+        erc20.transferFrom(msg.sender, seller, price);
+        erc721.transferFrom(address(this), buyer, _tokenId); //这里不会调用hook函数
         //调用erc721.safeTransferFrom(address(this), seller, _tokenId)时，由于代币的接收方是seller地址，而不是当前合约地址address(this)，因此不会触发onERC721Received函数。
         //safeTransferFrom函数遵循ERC-721标准，并具有以下行为：
 
@@ -81,6 +107,7 @@ contract Market {
 
     //调用NFT合约的safeTransferFrom(四个参数)会自动调用这个方法
     //在NFT合约里调用safeTransferFrom，自动调用这个方法实现自动上架
+    //如果不走safeTransferFrom的方法，可以直接走erc721的listingItem方法
     function onERC721Received(
         address from,
         uint256 tokenId,

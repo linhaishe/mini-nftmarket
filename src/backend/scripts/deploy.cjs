@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
 async function main() {
   const [deployer] = await ethers.getSigners();
 

@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract SadMonkey is ERC20 {
     constructor() ERC20("lin's erc20", "SadMonkey") {
-        _mint(msg.sender, 1 * 10 ** 8 * 10 ** 18); //1*10**8代表1亿，10**18精度是18
+        // _mint(msg.sender, 1 * 10 ** 8 * 10 ** 18); //1*10**8代表1亿，10**18精度是18
+        _mint(msg.sender, 1000 * 10 ** decimals()); //10, 000
     }
 }
