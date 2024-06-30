@@ -15,13 +15,14 @@ async function main() {
   const _erc20Token = await erc20Token.deploy();
   const _NFT = await NFT.deploy(deployer.address);
 
-  console.log('address111111', _erc20Token.address);
-  console.log('address22222', _NFT.address);
+  console.log('_erc20Token', _erc20Token.address);
+  console.log('_NFT', _NFT.address);
 
   const _Marketplace = await Marketplace.deploy(
     _erc20Token.address,
     _NFT.address
   );
+  console.log('_Marketplace', _Marketplace.address);
 
   // Save copies of each contracts abi and address to the frontend.
   saveFrontendFiles(_erc20Token, 'SadMonkey');

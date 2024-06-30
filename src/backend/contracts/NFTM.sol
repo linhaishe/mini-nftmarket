@@ -14,10 +14,10 @@ contract NFTM is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
 
     constructor() ERC721("lin's NFTM", "NFT") {}
 
-    function safeMint(address to, string memory uri) public onlyOwner {
+    function safeMint(string memory uri) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
+        _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, uri);
     }
 
