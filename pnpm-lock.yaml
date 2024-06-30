@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@nomiclabs/hardhat-ethers': 2.0.3
   '@nomiclabs/hardhat-waffle': 2.0.1
-  '@openzeppelin/contracts': ^5.0.2
+  '@openzeppelin/contracts': ^4.5.0
   '@tanstack/react-query': ^5.45.1
   '@types/mocha': 9.0.0
   '@types/node': 17.0.4
@@ -33,7 +33,7 @@ specifiers:
   wagmi: ^2.10.5
 
 dependencies:
-  '@openzeppelin/contracts': 5.0.2
+  '@openzeppelin/contracts': 4.9.6
   '@tanstack/react-query': 5.45.1_react@18.3.1
   bootstrap: 5.3.3
   buffer: 6.0.3
@@ -1759,8 +1759,8 @@ packages:
       hardhat: 2.22.5_typescript@5.5.2
     dev: true
 
-  /@openzeppelin/contracts/5.0.2:
-    resolution: {integrity: sha512-ytPc6eLGcHHnapAZ9S+5qsdomhjo6QBHTDRRBFfTxXIpsicMhVPouPgmUPebZZZGX7vt9USA+Z+0M0dSVtSUEA==}
+  /@openzeppelin/contracts/4.9.6:
+    resolution: {integrity: sha512-xSmezSupL+y9VkHZJGDoCBpmnB2ogM13ccaYDWqJTfS3dbuHkgjuwDFUmaFauBCboQMGB/S5UqUl2y54X99BmA==}
     dev: false
 
   /@parcel/watcher-android-arm64/2.4.1:

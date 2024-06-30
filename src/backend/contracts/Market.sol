@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 Marketplace contract 
 */
 
-contract TestMarketplace is Ownable, ReentrancyGuard, IERC721Receiver {
+contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
     Counters.Counter private _itemsSold;
