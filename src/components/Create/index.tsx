@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { Row, Form, Button } from 'react-bootstrap';
 import { create as ipfsHttpClient } from 'ipfs-http-client';
 import { Buffer } from 'buffer';
@@ -26,12 +26,14 @@ const client = ipfsHttpClient({
   },
 });
 
-const Create = ({ marketplace, nft }) => {
+const Create = ({ marketplace, nft, erc20Contract }: any) => {
   const { address } = useAccount();
   const [image, setImage] = useState('');
   const [price, setPrice] = useState(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [tokenId, setTokenId] = useState(null);
+  const [listingPrice, setListingPrice] = useState('0');
 
   const getOwnerOf = async () => {
     if (!nft) {
@@ -60,12 +62,30 @@ const Create = ({ marketplace, nft }) => {
       .catch((error) => console.log('error', error));
   };
 
+  const getContractNfts = async (address11: any) => {
+    const baseURL =
+      'https://eth-sepolia.g.alchemy.com/nft/v2/ywgT-Uea3J3QNFoOeZ5rjAdKyG1Yze5z/getNFTsForCollection';
+    const url = `${baseURL}?contractAddress=${address11}`;
+
+    const requestOptions = {
+      method: 'get',
+      redirect: 'follow',
+    };
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((response) => JSON.stringify(response, null, 2))
+      .then((result) => console.log(222, JSON.parse(result)))
+      .catch((error) => console.log('error', error));
+  };
+
   useEffect(() => {
     console.log('address', address, marketplace.address);
     // queryWalletNFTs(address);
     // fetchNFTForAddress(address);
     // getOwnerOf();
-    getNfts(address);
+    getNfts(marketplace.address);
+    getContractNfts(marketplace.address);
   }, []);
 
   const uploadToIPFS = async (event) => {
@@ -158,7 +178,66 @@ const Create = ({ marketplace, nft }) => {
     }
   };
 
-  const listingNFT = () => {};
+  const listingNFT = async () => {
+    try {
+      console.log('tokenId', tokenId);
+      console.log('listingPrice', listingPrice);
+
+      const isApprovalForAll = await nft.isApprovedForAll(
+        address,
+        marketplace.address
+      );
+
+      if (!isApprovalForAll) {
+        // set approval for all to market through nft contract
+        const approvalTransaction = await nft.setApprovalForAll(
+          marketplace.address,
+          true
+        );
+        const approvalRes = await approvalTransaction.wait();
+        console.log('approvalRes', approvalRes);
+      }
+
+      const isEnoughAllowance = await erc20Contract.allowance(
+        address,
+        marketplace.address
+      );
+      console.log(
+        'isEnoughAllowance',
+        isEnoughAllowance._hex,
+        BigNumber.from(isEnoughAllowance._hex).toString()
+      );
+
+      if (isEnoughAllowance < listingPrice) {
+        const approve = await erc20Contract.approve(
+          marketplace.address,
+          listingPrice
+        );
+
+        const approveRsp = await approve.wait();
+        console.log('approveRsp', approveRsp);
+      }
+
+      // 检查市场里是否已经有这个NFT
+      const { exists } = await marketplace.getMarketItemById(1);
+      console.log('isExist', exists);
+
+      if (!exists) {
+        const addItemToMarket = await marketplace.addItemToMarket(
+          tokenId,
+          listingPrice
+        );
+        const addItemToMarketRes = await addItemToMarket.wait();
+        console.log('addItemToMarketRes', addItemToMarketRes);
+      }
+
+      const createSale = await marketplace.createSale(1, true, 5);
+      const createSaleRes = await createSale.wait();
+      console.log('createSaleRes', createSaleRes);
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   return (
     <div className='container-fluid mt-5'>
@@ -200,6 +279,44 @@ const Create = ({ marketplace, nft }) => {
               <div className='d-grid px-0'>
                 <Button onClick={mintNFT} variant='primary' size='lg'>
                   mint NFT!
+                </Button>
+              </div>
+            </Row>
+          </div>
+        </main>
+      </div>
+
+      <div className='row'>
+        <main
+          role='main'
+          className='col-lg-12 mx-auto'
+          style={{ maxWidth: '1000px' }}
+        >
+          <div className='content mx-auto'>
+            <Row className='g-4'>
+              {/* <Form.Control
+                type='file'
+                required
+                name='file'
+                onChange={uploadToIPFS}
+              /> */}
+              <Form.Control
+                onChange={(e) => setTokenId(e.target.value)}
+                size='lg'
+                required
+                type='text'
+                placeholder='tokenId'
+              />
+              <Form.Control
+                onChange={(e) => setListingPrice(e.target.value)}
+                size='lg'
+                required
+                type='number'
+                placeholder='Price in erc20 token'
+              />
+              <div className='d-grid px-0'>
+                <Button onClick={listingNFT} variant='primary' size='lg'>
+                  Listing NFT!
                 </Button>
               </div>
             </Row>

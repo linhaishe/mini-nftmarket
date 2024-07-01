@@ -24,6 +24,7 @@ function App() {
   // const { address } = useAccount();
   const [nft, setNFT] = useState({});
   const [marketplace, setMarketplace] = useState({});
+  const [erc20Contract, setErc20Contract] = useState({});
 
   useEffect(() => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -35,10 +36,17 @@ function App() {
       signer
     );
     const nft = new ethers.Contract(NFTMAddress.address, NFTMAbi.abi, signer);
+    const erc20 = new ethers.Contract(
+      SadMonkeyAddress.address,
+      SadMonkeyAbi.abi,
+      signer
+    );
     setMarketplace(marketplace);
     setNFT(nft);
     console.log('marketplace', marketplace);
     console.log('nft', nft);
+    console.log('erc20', erc20);
+    setErc20Contract(erc20);
   }, []);
   return (
     <WagmiProvider config={config}>
@@ -47,7 +55,11 @@ function App() {
           <Nav />
           {/* <ItemCard /> */}
           {/* <Home /> */}
-          <Create marketplace={marketplace} nft={nft} />
+          <Create
+            marketplace={marketplace}
+            nft={nft}
+            erc20Contract={erc20Contract}
+          />
         </div>
       </QueryClientProvider>
     </WagmiProvider>

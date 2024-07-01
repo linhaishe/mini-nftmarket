@@ -13,14 +13,14 @@ async function main() {
 
   // deploy contracts
   const _erc20Token = await erc20Token.deploy();
-  const _NFT = await NFT.deploy(deployer.address);
+  const _NFT = await NFT.deploy();
 
   console.log('_erc20Token', _erc20Token.address);
   console.log('_NFT', _NFT.address);
 
   const _Marketplace = await Marketplace.deploy(
-    _erc20Token.address,
-    _NFT.address
+    _NFT.address,
+    _erc20Token.address
   );
   console.log('_Marketplace', _Marketplace.address);
 
