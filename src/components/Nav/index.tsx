@@ -10,7 +10,7 @@ function Nav() {
       <div className='home-title'>MarketPlace</div>
       <div className='route-wrap'>
         <div className='nav-title'>Home</div>
-        <div className='nav-title'>Own</div>
+        <div className='nav-title'>Owned</div>
         <div className='nav-title'>Create</div>
       </div>
       <ConnectWallet />

@@ -1,16 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
-import { WagmiProvider, useAccount } from 'wagmi';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useAccount } from 'wagmi';
 import { ethers } from 'ethers';
-
-import { config } from './config';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MarketAbi from './backend/contractsData/Market.json';
 import MarketAddress from './backend/contractsData/Market-address.json';
 import NFTMAbi from './backend/contractsData/NFTM.json';
 import NFTMAddress from './backend/contractsData/NFTM-address.json';
 import SadMonkeyAbi from './backend/contractsData/SadMonkey.json';
 import SadMonkeyAddress from './backend/contractsData/SadMonkey-address.json';
-
+import { getNfts } from './utils';
 import Nav from './components/Nav';
 import ItemCard from './components/ItemCard';
 import Home from './components/Home';
@@ -18,13 +16,31 @@ import Create from './components/Create';
 
 import './App.css';
 
-const queryClient = new QueryClient();
-
 function App() {
-  // const { address } = useAccount();
+  const { address } = useAccount();
   const [nft, setNFT] = useState({});
   const [marketplace, setMarketplace] = useState({});
   const [erc20Contract, setErc20Contract] = useState({});
+  const [marketNftLists, setMarketNftLists] = useState([]);
+  const [userNftLists, setUserNftLists] = useState([]);
+
+  const getNftLists = async (marketAddress, walletAddress) => {
+    console.log('999', marketAddress, walletAddress);
+
+    if (!marketAddress || !walletAddress) {
+      return;
+    }
+
+    if (marketAddress) {
+      const res: any = await getNfts(marketAddress);
+      setMarketNftLists(res?.ownedNfts);
+    }
+
+    if (walletAddress) {
+      const res: any = await getNfts(walletAddress);
+      setUserNftLists(res?.ownedNfts);
+    }
+  };
 
   useEffect(() => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -43,26 +59,74 @@ function App() {
     );
     setMarketplace(marketplace);
     setNFT(nft);
-    console.log('marketplace', marketplace);
-    console.log('nft', nft);
-    console.log('erc20', erc20);
     setErc20Contract(erc20);
   }, []);
+
+  useEffect(() => {
+    getNftLists(marketplace.address, address);
+  }, [marketplace, address]);
+
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <div>
+    <BrowserRouter>
+      <div className='App'>
+        <>
           <Nav />
-          <ItemCard />
-          {/* <Home /> */}
-          <Create
+        </>
+
+        {/* <ItemCard /> */}
+        {/* <Home /> */}
+        {/* <Create
             marketplace={marketplace}
             nft={nft}
             erc20Contract={erc20Contract}
-          />
+          /> */}
+        <div>
+          <Routes>
+            <Route
+              path='/'
+              element={
+                <Home
+                  marketplace={marketplace}
+                  nft={nft}
+                  erc20Contract={erc20Contract}
+                  marketNftLists={marketNftLists}
+                />
+              }
+            />
+            <Route
+              path='/create'
+              element={
+                <Create
+                  marketplace={marketplace}
+                  nft={nft}
+                  erc20Contract={erc20Contract}
+                />
+              }
+            />
+            {/* <Route
+                path='/my-listed-items'
+                element={
+                  <MyListedItems
+                    marketplace={marketplace}
+                    nft={nft}
+                    account={account}
+                  />
+                }
+              />
+              <Route
+                path='/my-purchases'
+                element={
+                  <MyPurchases
+                    marketplace={marketplace}
+                    nft={nft}
+                    account={account}
+                  />
+                }
+              /> */}
+          </Routes>
         </div>
-      </QueryClientProvider>
-    </WagmiProvider>
+      </div>
+    </BrowserRouter>
   );
 }
 

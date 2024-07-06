@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import './index.scss';
 
-function ItemCard() {
+function ItemCard({ item }) {
+  console.log('item', item);
+
   return (
     <div className='item-wrap'>
       <img
@@ -15,22 +17,25 @@ function ItemCard() {
         />
         <div className='user-account-wrap-item-card'>
           <div className='user-names'>Creator</div>
-          <div className='user-ids'>
-            https://cdn-icons-png.flaticon.com/512/9693/9693244.png
-          </div>
+          <div className='user-ids'>{item?.contract?.address}</div>
         </div>
       </div>
       <div className='item-card-nft-info'>
-        <div className='item-card-nft-info-title'>title</div>
-        <div className='item-card-nft-info-desc'>desc</div>
+        <div className='item-card-nft-info-title'>{item?.metadata?.name}</div>
+        <div className='item-card-nft-info-desc'>
+          {item?.metadata?.description}
+        </div>
       </div>
       <div className='item-card-price-info-wrap'>
         <div className='item-card-price-info'>
-          <div className='item-card-price-info-price'>29</div>
+          <div className='item-card-price-info-price'>
+            {item?.metadata?.price}
+          </div>
           <div className='item-card-price-info-title'>Price</div>
         </div>
         <div className='action-btn'>Buy</div>
       </div>
+      <div className='item-card-create-time'>{item?.timeLastUpdated}</div>
     </div>
   );
 }
