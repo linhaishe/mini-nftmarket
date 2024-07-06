@@ -10,9 +10,9 @@ import SadMonkeyAbi from './backend/contractsData/SadMonkey.json';
 import SadMonkeyAddress from './backend/contractsData/SadMonkey-address.json';
 import { getNfts } from './utils';
 import Nav from './components/Nav';
-import ItemCard from './components/ItemCard';
 import Home from './components/Home';
 import Create from './components/Create';
+import OwnedPage from './components/OwnedPage';
 
 import './App.css';
 
@@ -72,14 +72,6 @@ function App() {
         <>
           <Nav />
         </>
-
-        {/* <ItemCard /> */}
-        {/* <Home /> */}
-        {/* <Create
-            marketplace={marketplace}
-            nft={nft}
-            erc20Contract={erc20Contract}
-          /> */}
         <div>
           <Routes>
             <Route
@@ -103,26 +95,10 @@ function App() {
                 />
               }
             />
-            {/* <Route
-                path='/my-listed-items'
-                element={
-                  <MyListedItems
-                    marketplace={marketplace}
-                    nft={nft}
-                    account={account}
-                  />
-                }
-              />
-              <Route
-                path='/my-purchases'
-                element={
-                  <MyPurchases
-                    marketplace={marketplace}
-                    nft={nft}
-                    account={account}
-                  />
-                }
-              /> */}
+            <Route
+              path='/owned'
+              element={<OwnedPage userNftLists={userNftLists} />}
+            />
           </Routes>
         </div>
       </div>

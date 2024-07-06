@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { Connector, useConnect } from 'wagmi';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { ConnectWallet } from '../ConnectWallet';
 
 import './index.scss';
@@ -9,9 +9,15 @@ function Nav() {
     <div className='nav-wrap'>
       <div className='home-title'>MarketPlace</div>
       <div className='route-wrap'>
-        <div className='nav-title'>Home</div>
-        <div className='nav-title'>Owned</div>
-        <div className='nav-title'>Create</div>
+        <Link className='nav-title' to={'/'}>
+          Home
+        </Link>
+        <Link className='nav-title' to={'/owned'}>
+          Owned
+        </Link>
+        <Link className='nav-title' to={'/create'}>
+          Create
+        </Link>
       </div>
       <ConnectWallet />
     </div>

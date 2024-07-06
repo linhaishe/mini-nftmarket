@@ -3,6 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 30px;
 
   .home-title {
     font-weight: 900;
@@ -20,6 +21,8 @@
     .nav-title {
       font-size: 20px;
       font-weight: 600;
+      text-decoration: none;
+      color: #333;
     }
   }
 }
