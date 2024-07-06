@@ -3,13 +3,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
 
-.route-wrap {
-  width: max-content;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
+  .home-title {
+    font-weight: 900;
+    font-size: 20px;
+  }
+
+  .route-wrap {
+    width: max-content;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+
+    .nav-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+  }
 }

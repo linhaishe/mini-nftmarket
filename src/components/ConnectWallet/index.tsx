@@ -8,6 +8,8 @@ import {
   useEnsName,
 } from 'wagmi';
 
+import './index.scss';
+
 function WalletOption({
   connector,
   onClick,
@@ -50,9 +52,15 @@ function Account() {
   const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
 
   return (
-    <div>
-      {ensAvatar && <img alt='ENS Avatar' src={ensAvatar} />}
-      {address && <div>{ensName ? `${ensName} (${address})` : address}</div>}
+    <div className='user-account-wrap'>
+      <img
+        className='user-avatar'
+        alt='ENS Avatar'
+        src={
+          'https://images.freeimages.com/image/previews/cb6/sunshine-ornament-png-5690546.png'
+        }
+      />
+      {address && <div className='addr'>{address}</div>}
       <button onClick={() => disconnect()}>Disconnect</button>
     </div>
   );

@@ -7,11 +7,11 @@ import './index.scss';
 function Nav() {
   return (
     <div className='nav-wrap'>
-      <div>MarketPlace</div>
+      <div className='home-title'>MarketPlace</div>
       <div className='route-wrap'>
-        <div>Home</div>
-        <div>Own</div>
-        <div>Create</div>
+        <div className='nav-title'>Home</div>
+        <div className='nav-title'>Own</div>
+        <div className='nav-title'>Create</div>
       </div>
       <ConnectWallet />
     </div>

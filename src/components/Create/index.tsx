@@ -6,7 +6,7 @@ import { Buffer } from 'buffer';
 // import 'dotenv/config';
 import { useAccount } from 'wagmi';
 // import { GATE_WAY, PINATA_JWT } from '../../test';
-import { fetchNFTForAddress, getNfts, queryWalletNFTs } from '../../api';
+// import { fetchNFTForAddress, getNfts, queryWalletNFTs } from '../../api';
 import './index.scss';
 
 const projectId = '2d95181e46f045bcad8abcd7f8307bc9';
@@ -84,8 +84,8 @@ const Create = ({ marketplace, nft, erc20Contract }: any) => {
     // queryWalletNFTs(address);
     // fetchNFTForAddress(address);
     // getOwnerOf();
+    getNfts(address);
     getNfts(marketplace.address);
-    getContractNfts(marketplace.address);
   }, []);
 
   const uploadToIPFS = async (event) => {
