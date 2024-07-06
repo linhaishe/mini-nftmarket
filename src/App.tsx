@@ -53,7 +53,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div>
           <Nav />
-          {/* <ItemCard /> */}
+          <ItemCard />
           {/* <Home /> */}
           <Create
             marketplace={marketplace}
