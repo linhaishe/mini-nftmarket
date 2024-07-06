@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { Row, Form, Button } from 'react-bootstrap';
-import { create as ipfsHttpClient } from 'ipfs-http-client';
 import { Buffer } from 'buffer';
-// import 'dotenv/config';
 import { useAccount } from 'wagmi';
-// import { GATE_WAY, PINATA_JWT } from '../../test';
-// import { fetchNFTForAddress, getNfts, queryWalletNFTs } from '../../api';
+
 import './index.scss';
 
 const projectId = '2d95181e46f045bcad8abcd7f8307bc9';
@@ -16,15 +12,6 @@ const PINATA_JWT =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI4NzAyMmJjZC02OTA3LTRkZWUtOTE1Yi1hNjI3M2Q0ZDBlYmMiLCJlbWFpbCI6Inh1c3VtdUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiMTVhOGZkMmE4MTFlOThkYzRlMjgiLCJzY29wZWRLZXlTZWNyZXQiOiI2ODJmMzZiY2I0YzRjNTU2M2JiODIyYmU2ZTAxZGNlMjJhNWQyZDY4NzdiNjM1YWIxNWUwNmZlOWE4ZjJhM2YzIiwiaWF0IjoxNzE5NDk0NDQzfQ.VzIdn5-QTSwBsc0VkEd3VA8Xz8pwwMci6gzz20wlc2M';
 const auth =
   'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
-const client = ipfsHttpClient({
-  host: 'ipfs.infura.io',
-  port: 5001,
-  protocol: 'https',
-  apiPath: '/api/v0',
-  headers: {
-    authorization: auth,
-  },
-});
 
 const Create = ({ marketplace, nft, erc20Contract }: any) => {
   const { address } = useAccount();
@@ -240,89 +227,62 @@ const Create = ({ marketplace, nft, erc20Contract }: any) => {
   };
 
   return (
-    <div className='container-fluid mt-5'>
-      <div className='row'>
-        <main
-          role='main'
-          className='col-lg-12 mx-auto'
-          style={{ maxWidth: '1000px' }}
-        >
-          <div className='content mx-auto'>
-            <Row className='g-4'>
-              {/* <Form.Control
-                type='file'
-                required
-                name='file'
-                onChange={uploadToIPFS}
-              /> */}
-              <Form.Control
-                onChange={(e) => setName(e.target.value)}
-                size='lg'
-                required
-                type='text'
-                placeholder='Name'
-              />
-              <Form.Control
-                onChange={(e) => setDescription(e.target.value)}
-                size='lg'
-                required
-                as='textarea'
-                placeholder='Description'
-              />
-              <Form.Control
-                onChange={(e) => setPrice(e.target.value)}
-                size='lg'
-                required
-                type='number'
-                placeholder='Price in ETH'
-              />
-              <div className='d-grid px-0'>
-                <Button onClick={mintNFT} variant='primary' size='lg'>
-                  mint NFT!
-                </Button>
-              </div>
-            </Row>
-          </div>
-        </main>
+    <div className='create-form-wrap'>
+      <div className='create-form-input-wrap'>
+        <input type='file' name='file' onChange={uploadToIPFS} />
+        <img
+          src='https://cdn-icons-png.flaticon.com/512/12068/12068350.png'
+          className='create-nft-img'
+        />
+        <input
+          onChange={(e) => setName(e.target.value)}
+          type='text'
+          placeholder='Name'
+        />
+        <input
+          type='text'
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder='Description'
+        />
+        <input
+          onChange={(e) => setPrice(e.target.value)}
+          type='number'
+          placeholder='Price in erc20 token'
+        />
+        <div className='nft-action-btn' onClick={mintNFT}>
+          Create NFT
+        </div>
       </div>
 
-      <div className='row'>
-        <main
-          role='main'
-          className='col-lg-12 mx-auto'
-          style={{ maxWidth: '1000px' }}
-        >
-          <div className='content mx-auto'>
-            <Row className='g-4'>
-              {/* <Form.Control
-                type='file'
-                required
-                name='file'
-                onChange={uploadToIPFS}
-              /> */}
-              <Form.Control
-                onChange={(e) => setTokenId(e.target.value)}
-                size='lg'
-                required
-                type='text'
-                placeholder='tokenId'
-              />
-              <Form.Control
-                onChange={(e) => setListingPrice(e.target.value)}
-                size='lg'
-                required
-                type='number'
-                placeholder='Price in erc20 token'
-              />
-              <div className='d-grid px-0'>
-                <Button onClick={listingNFT} variant='primary' size='lg'>
-                  Listing NFT!
-                </Button>
-              </div>
-            </Row>
+      {/* <div className='row'>
+        <div className='content mx-auto'>
+          <Form.Control
+            type='file'
+            required
+            name='file'
+            onChange={uploadToIPFS}
+          />
+          <Form.Control
+            onChange={(e) => setTokenId(e.target.value)}
+            size='lg'
+            required
+            type='text'
+            placeholder='tokenId'
+          />
+          <Form.Control
+            onChange={(e) => setListingPrice(e.target.value)}
+            size='lg'
+            required
+            type='number'
+            placeholder='Price in erc20 token'
+          />
+          <div className='d-grid px-0'>
+            <Button onClick={listingNFT} variant='primary' size='lg'>
+              Listing NFT!
+            </Button>
           </div>
-        </main>
-      </div>
+        </div>
+      </div> */}
     </div>
   );
 };
