@@ -82,6 +82,8 @@ function App() {
                   nft={nft}
                   erc20Contract={erc20Contract}
                   marketNftLists={marketNftLists}
+                  userNftLists={userNftLists}
+                  address={address}
                 />
               }
             />
@@ -97,7 +99,16 @@ function App() {
             />
             <Route
               path='/owned'
-              element={<OwnedPage userNftLists={userNftLists} />}
+              element={
+                <OwnedPage
+                  marketplace={marketplace}
+                  erc20Contract={erc20Contract}
+                  nft={nft}
+                  userNftLists={userNftLists}
+                  marketNftLists={marketNftLists}
+                  address={address}
+                />
+              }
             />
           </Routes>
         </div>
