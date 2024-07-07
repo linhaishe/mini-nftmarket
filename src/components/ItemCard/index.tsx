@@ -1,8 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import './index.scss';
 import { hexToDecimal, timestampToLocalTime } from '../../utils';
 
-function ItemCard({ item, actionFunc, buttonText }) {
+function ItemCard({
+  item,
+  actionFunc,
+  buttonText,
+  ownerAddress,
+  personTitle,
+  isSell,
+}) {
   console.log('item', item);
   const tokenId = hexToDecimal(item?.id?.tokenId);
 
@@ -18,8 +25,8 @@ function ItemCard({ item, actionFunc, buttonText }) {
           className='avatar-img'
         />
         <div className='user-account-wrap-item-card'>
-          <div className='user-names'>Creator</div>
-          <div className='user-ids'>{item?.contract?.address}</div>
+          <div className='user-names'>{personTitle}</div>
+          <div className='user-ids'>{ownerAddress}</div>
         </div>
       </div>
       <div className='item-card-nft-info'>

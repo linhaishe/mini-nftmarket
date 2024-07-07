@@ -17,8 +17,6 @@ export default function Home({
   const [isLoading, setIsLoading] = useState(false);
 
   const onBuy = async (nftId, price) => {
-    console.log('currentNft', hexToDecimal(nftId), price);
-
     try {
       setIsLoading(true);
       const allowance = await erc20Contract.allowance(
@@ -40,12 +38,12 @@ export default function Home({
         hexToDecimal(nftId)
       );
       const buyTransaction = await marketplace.buyItem(itemInfo?.itemId, price);
-      const buyRes = await buyTransaction.wait();
-      console.log('buyRes', buyRes);
+      await buyTransaction.wait();
     } catch (error) {
       alert(error);
     } finally {
       setIsLoading(false);
+      location.reload();
     }
   };
 
@@ -57,10 +55,15 @@ export default function Home({
             <div key={i}>
               <ItemCard
                 item={v}
-                buttonText={'Buy'}
+                buttonText={
+                  v.seller === address && v.isUpForSale ? 'unList' : 'Buy'
+                }
                 actionFunc={() => {
                   onBuy(v?.id?.tokenId, v?.metadata?.price);
                 }}
+                personTitle={'Seller'}
+                ownerAddress={v.seller}
+                isSell={v.seller === address && v.isUpForSale}
               />
             </div>
           ))}

@@ -11,7 +11,7 @@ const PINATA_JWT =
 const auth =
   'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
-const Create = ({ nft }: any) => {
+const Create = ({ nft, setIsLoading }: any) => {
   const [image, setImage] = useState('');
   const [price, setPrice] = useState<any>();
   const [name, setName] = useState('');
@@ -60,6 +60,8 @@ const Create = ({ nft }: any) => {
         return;
       }
 
+      setIsLoading(true);
+
       const options = {
         method: 'POST',
         headers: {
@@ -94,6 +96,8 @@ const Create = ({ nft }: any) => {
       setImage('');
     } catch (error) {
       console.log('error', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MarketAbi from './backend/contractsData/Market.json';
 import MarketAddress from './backend/contractsData/Market-address.json';
@@ -13,16 +13,53 @@ import Nav from './components/Nav';
 import Home from './components/Home';
 import Create from './components/Create';
 import OwnedPage from './components/OwnedPage';
+import Loading from './components/Loading';
 
 import './App.css';
 
 function App() {
   const { address } = useAccount();
   const [nft, setNFT] = useState({});
-  const [marketplace, setMarketplace] = useState({});
+  const [marketplace, setMarketplace] = useState<any>({});
   const [erc20Contract, setErc20Contract] = useState({});
   const [marketNftLists, setMarketNftLists] = useState([]);
   const [userNftLists, setUserNftLists] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  function transformData(originalData, oriData2) {
+    // 使用 map 方法遍历原始数组，并返回新的对象数组
+    const transformedArray = originalData.map((item) => {
+      return {
+        itemId: item.itemId,
+        tokenId: item.tokenId,
+        seller: item.seller,
+        owner: item.owner,
+        price: item.price,
+        isSold: item.isSold,
+        isUpForSale: item.isUpForSale,
+        exists: item.exists,
+      };
+    });
+
+    // 使用 map 方法遍历 transformedArray，并将匹配的 oriData2 数据合并
+    const finalData = transformedArray.map((item1) => {
+      const matchedItem = oriData2.find((item2) => {
+        return BigNumber.from(item1.tokenId._hex.toString()).eq(
+          item2?.id?.tokenId
+        );
+      });
+
+      if (matchedItem) {
+        return {
+          ...item1,
+          ...matchedItem,
+        };
+      } else {
+        return item1; // 如果没有匹配的项，返回原始 item1
+      }
+    });
+    return finalData;
+  }
 
   const getNftLists = async (marketAddress, walletAddress) => {
     console.log('999', marketAddress, walletAddress);
@@ -33,7 +70,9 @@ function App() {
 
     if (marketAddress) {
       const res: any = await getNfts(marketAddress);
-      setMarketNftLists(res?.ownedNfts);
+      const originalRes = await marketplace?.getAllMarketItems();
+      const results = transformData(originalRes, res?.ownedNfts);
+      setMarketNftLists(results);
     }
 
     if (walletAddress) {
@@ -94,6 +133,7 @@ function App() {
                   marketplace={marketplace}
                   nft={nft}
                   erc20Contract={erc20Contract}
+                  setIsLoading={setIsLoading}
                 />
               }
             />
@@ -107,11 +147,13 @@ function App() {
                   userNftLists={userNftLists}
                   marketNftLists={marketNftLists}
                   address={address}
+                  setIsLoading={setIsLoading}
                 />
               }
             />
           </Routes>
         </div>
+        <Loading isLoading={isLoading} />
       </div>
     </BrowserRouter>
   );

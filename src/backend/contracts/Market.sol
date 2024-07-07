@@ -197,7 +197,7 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
             }
         }
 
-        require(found, "Market item not found");
+        // require(found, "Market item not found");
         return item;
     }
 
@@ -214,6 +214,22 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
                 items[currentIndex] = currentItem;
                 currentIndex += 1;
             }
+        }
+
+        return items;
+    }
+
+    // 返回市场中所有的NFT信息
+    function getAllMarketItems() public view returns (MarketItem[] memory) {
+        uint256 itemCount = _itemIds.current();
+        MarketItem[] memory items = new MarketItem[](itemCount);
+        uint256 currentIndex = 0;
+
+        for (uint256 i = 0; i < itemCount; i++) {
+            uint256 currentId = i + 1;
+            MarketItem memory currentItem = idToMarketItem[currentId];
+            items[currentIndex] = currentItem;
+            currentIndex += 1;
         }
 
         return items;

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ItemCard from '../ItemCard';
 import { BigNumber } from 'ethers';
 import ListToast from '../ListToast';
 import { hexToDecimal } from '../../utils';
-import Loading from '../Loading';
 
 import './index.scss';
 
@@ -12,10 +11,10 @@ export default function OwnedPage({
   nft,
   marketplace,
   erc20Contract,
+  setIsLoading,
   address,
 }: any) {
   const [isShow, setIsShow] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [currentTokenId, setCurrentTokenId] = useState<string | null>(null);
 
   const listingNFT = async (listingPrice) => {
@@ -33,8 +32,7 @@ export default function OwnedPage({
           marketplace.address,
           true
         );
-        const approvalRes = await approvalTransaction.wait();
-        console.log('approvalRes', approvalRes);
+        await approvalTransaction.wait();
       }
 
       const allowance = await erc20Contract.allowance(
@@ -48,24 +46,20 @@ export default function OwnedPage({
           listingPrice
         );
 
-        const approveRsp = await approve.wait();
-        console.log('approveRsp', approveRsp);
+        await approve.wait();
       }
 
       let itemInfo;
       // 检查市场里是否已经有这个NFT, 如果没创建的话是不窜爱 iteminfo的，这样就拿不到itemId
       itemInfo = await marketplace.getMarketItemByTokenId(currentTokenId);
-      console.log('isExist', itemInfo, itemInfo?.exists);
 
       if (!itemInfo?.isExist) {
         const addItemToMarket = await marketplace.addItemToMarket(
           currentTokenId,
           listingPrice
         );
-        const addItemToMarketRes = await addItemToMarket.wait();
-        console.log('addItemToMarketRes', addItemToMarketRes);
+        await addItemToMarket.wait();
         itemInfo = await marketplace.getMarketItemByTokenId(currentTokenId);
-        console.log('itemInfo', itemInfo);
       }
 
       const createSale = await marketplace.createSale(
@@ -73,8 +67,7 @@ export default function OwnedPage({
         true,
         listingPrice
       );
-      const createSaleRes = await createSale.wait();
-      console.log('createSaleRes', createSaleRes);
+      await createSale.wait();
     } catch (error) {
       alert(error);
     } finally {
@@ -100,6 +93,8 @@ export default function OwnedPage({
                     setCurrentTokenId(hexToDecimal(v?.id?.tokenId));
                   }}
                   buttonText={'Sell'}
+                  ownerAddress={address}
+                  personTitle={'Owner'}
                 />
               </div>
             );
@@ -109,7 +104,6 @@ export default function OwnedPage({
         <div>nothing here ...</div>
       )}
       <ListToast isShow={isShow} setIsShow={setIsShow} onConfirm={listingNFT} />
-      <Loading isLoading={isLoading} />
     </>
   );
 }
