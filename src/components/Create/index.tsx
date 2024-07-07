@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import { Buffer } from 'buffer';
-
 import './index.scss';
-
-const projectId = '2d95181e46f045bcad8abcd7f8307bc9';
-const projectSecret = 's1q58PZyuFCaPdQCxvwS7cUNAwO2wXahrchunT/+KfYIho/cK1v+lw';
-const GATE_WAY = 'https://amber-defeated-vulture-251.mypinata.cloud';
-const PINATA_JWT =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI4NzAyMmJjZC02OTA3LTRkZWUtOTE1Yi1hNjI3M2Q0ZDBlYmMiLCJlbWFpbCI6Inh1c3VtdUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiMTVhOGZkMmE4MTFlOThkYzRlMjgiLCJzY29wZWRLZXlTZWNyZXQiOiI2ODJmMzZiY2I0YzRjNTU2M2JiODIyYmU2ZTAxZGNlMjJhNWQyZDY4NzdiNjM1YWIxNWUwNmZlOWE4ZjJhM2YzIiwiaWF0IjoxNzE5NDk0NDQzfQ.VzIdn5-QTSwBsc0VkEd3VA8Xz8pwwMci6gzz20wlc2M';
-const auth =
-  'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
 const Create = ({ nft, setIsLoading }: any) => {
   const [image, setImage] = useState('');
@@ -39,14 +29,14 @@ const Create = ({ nft, setIsLoading }: any) => {
           {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${PINATA_JWT}`,
+              Authorization: `Bearer ${process.env.PINATA_JWT}`,
               'Access-Control-Allow-Origin': '*',
             },
             body: formData,
           }
         );
         const resData = await res.json();
-        setImage(`${GATE_WAY}/ipfs/${resData?.IpfsHash}`);
+        setImage(`${process.env.GATE_WAY}/ipfs/${resData?.IpfsHash}`);
       } catch (error) {
         console.log('ipfs image upload error: ', error);
       }
@@ -65,7 +55,7 @@ const Create = ({ nft, setIsLoading }: any) => {
       const options = {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${PINATA_JWT}`,
+          Authorization: `Bearer ${process.env.PINATA_JWT}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -85,11 +75,10 @@ const Create = ({ nft, setIsLoading }: any) => {
         options
       );
       const resData = await res.json();
-      const uri = `${GATE_WAY}/ipfs/${resData?.IpfsHash}`;
+      const uri = `${process.env.GATE_WAY}/ipfs/${resData?.IpfsHash}`;
       // mint nft
       const transaction = await nft.safeMint(uri);
-      const res9 = await transaction.wait();
-      console.log('123', res9);
+      await transaction.wait();
       setName('');
       setDescription('');
       setPrice('');
