@@ -70,7 +70,6 @@ export default function Home({
         <div className='item-list-wrap'>
           {marketNftLists?.map((v, i) => {
             const isSell = v.seller === address && v.isUpForSale;
-            console.log('v', v);
 
             return (
               <div key={i}>

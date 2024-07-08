@@ -23,7 +23,6 @@ export default function OwnedPage({
       (item) => item?.seller.toLowerCase() === address.toLowerCase()
     ) || [];
   const showList = [...userNftLists, ...marketplaceItems];
-  console.log('showList', showList);
 
   const listingNFT = async (listingPrice) => {
     try {
