@@ -26,9 +26,9 @@ function App() {
   const [userNftLists, setUserNftLists] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  function transformData(originalData, oriData2) {
+  function transformData(dataFromAlchemy, dataFromContract) {
     // 使用 map 方法遍历原始数组，并返回新的对象数组
-    const transformedArray = originalData.map((item) => {
+    const transformedArray = dataFromAlchemy.map((item) => {
       return {
         itemId: item.itemId,
         tokenId: item.tokenId,
@@ -38,12 +38,16 @@ function App() {
         isSold: item.isSold,
         isUpForSale: item.isUpForSale,
         exists: item.exists,
+        listingTimestamp: item.listingTimestamp,
+        createdTimestamp: item.createdTimestamp,
       };
     });
 
+    console.log('transformedArray', transformedArray);
+
     // 使用 map 方法遍历 transformedArray，并将匹配的 oriData2 数据合并
     const finalData = transformedArray.map((item1) => {
-      const matchedItem = oriData2.find((item2) => {
+      const matchedItem = dataFromContract.find((item2) => {
         return BigNumber.from(item1.tokenId._hex.toString()).eq(
           item2?.id?.tokenId
         );
@@ -62,8 +66,6 @@ function App() {
   }
 
   const getNftLists = async (marketAddress, walletAddress) => {
-    console.log('999', marketAddress, walletAddress);
-
     if (!marketAddress || !walletAddress) {
       return;
     }
@@ -72,7 +74,7 @@ function App() {
       const res: any = await getNfts(marketAddress);
       const originalRes = await marketplace?.getAllMarketItems();
       const results = transformData(originalRes, res?.ownedNfts);
-      setMarketNftLists(results);
+      setMarketNftLists(results?.filter((item, index) => !item?.isSold));
     }
 
     if (walletAddress) {

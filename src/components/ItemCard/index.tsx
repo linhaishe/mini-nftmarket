@@ -1,6 +1,10 @@
 import React from 'react';
 import './index.scss';
-import { hexToDecimal, timestampToLocalTime } from '../../utils';
+import {
+  hexToDecimal,
+  timestampToLocalTime,
+  convertHexToDecimal,
+} from '../../utils';
 
 function ItemCard({
   item,
@@ -10,13 +14,18 @@ function ItemCard({
   personTitle,
   isSell,
 }) {
-  console.log('item', item);
-  const tokenId = hexToDecimal(item?.id?.tokenId);
+  const tokenId = hexToDecimal(item?.id?.tokenId || item?.tokenId?._hex || 0);
+  const listingTime = convertHexToDecimal({
+    _hex: item?.listingTimestamp?._hex,
+  });
 
   return (
     <div className='item-wrap'>
       <img
-        src='https://images.freeimages.com/image/previews/477/sweet-flat-candy-png-5690113.png'
+        src={
+          item?.metadata?.image ||
+          'https://images.freeimages.com/image/previews/477/sweet-flat-candy-png-5690113.png'
+        }
         className='nft-img'
       />
       <div className='user-info-wraps'>
@@ -52,7 +61,12 @@ function ItemCard({
       </div>
       {item?.metadata?.createTime && (
         <div className='item-card-create-time'>
-          {timestampToLocalTime(item?.metadata?.createTime)}
+          Create: {timestampToLocalTime(item?.metadata?.createTime)}
+        </div>
+      )}
+      {item?.listingTimestamp && (
+        <div className='item-card-create-time'>
+          Listing: {timestampToLocalTime(listingTime * 1000)}
         </div>
       )}
     </div>

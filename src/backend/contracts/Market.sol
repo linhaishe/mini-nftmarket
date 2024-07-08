@@ -32,6 +32,8 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
         bool isSold;
         bool isUpForSale;
         bool exists;
+        uint256 createdTimestamp;
+        uint256 listingTimestamp;
     }
 
     mapping(uint256 => MarketItem) public idToMarketItem;
@@ -94,7 +96,9 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
             price,
             false,
             false,
-            true
+            true,
+            block.timestamp,
+            block.timestamp
         );
 
         IERC20(acceptedTokenAddress).transferFrom(
@@ -124,6 +128,7 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
         require(item.exists == true, "Item does not exist.");
 
         idToMarketItem[itemId].isUpForSale = true;
+        idToMarketItem[itemId].listingTimestamp = block.timestamp; // 设置上架时间
         if (changePrice) idToMarketItem[itemId].price = newPrice;
 
         emit MarketItemUpForSale(
@@ -193,7 +198,7 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
             if (idToMarketItem[currentId].tokenId == tokenId) {
                 item = idToMarketItem[currentId];
                 found = true;
-                break; // 找到匹配的项后，跳出循环
+                break;
             }
         }
 

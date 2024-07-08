@@ -19,7 +19,7 @@ export const getNfts = async (address: any) => {
 
 export function hexToDecimal(hexString) {
   // 去掉十六进制字符串的前缀“0x”
-  if (hexString.startsWith('0x')) {
+  if (hexString?.startsWith('0x')) {
     hexString = hexString.substring(2);
   }
 
@@ -41,4 +41,12 @@ export function timestampToLocalTime(timestamp) {
 
   // 返回本地时间字符串
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+export function convertHexToDecimal(hexObject) {
+  if (hexObject && hexObject._hex) {
+    return parseInt(hexObject._hex, 16);
+  } else {
+    return 0;
+  }
 }

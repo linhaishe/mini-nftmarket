@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ConnectWallet } from '../ConnectWallet';
 
 import './index.scss';
 
 function Nav() {
-  const [isActive, setIsActive] = useState('/');
+  const [isActive, setIsActive] = useState<any>();
+
+  useEffect(() => {
+    const currentLocationPath = location.pathname;
+    setIsActive(currentLocationPath);
+  }, []);
 
   return (
     <div className='nav-wrap'>
