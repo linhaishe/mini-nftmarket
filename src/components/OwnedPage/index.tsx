@@ -20,7 +20,7 @@ export default function OwnedPage({
   const [currentItem, setCurrentItem] = useState<any>({});
   const marketplaceItems =
     marketNftLists?.filter(
-      (item) => item?.seller.toLowerCase() === address.toLowerCase()
+      (item) => item?.seller?.toLowerCase() === address?.toLowerCase()
     ) || [];
   const showList = [...userNftLists, ...marketplaceItems];
 
@@ -97,7 +97,7 @@ export default function OwnedPage({
       {showList?.length > 0 ? (
         <div className='item-list-wrap'>
           {showList?.map((v, i) => {
-            if (v?.contract?.address !== nft.address.toLowerCase()) {
+            if (v?.contract?.address !== nft?.address?.toLowerCase()) {
               return null;
             }
 
