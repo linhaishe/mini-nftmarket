@@ -43,8 +43,6 @@ function App() {
       };
     });
 
-    console.log('transformedArray', transformedArray);
-
     // 使用 map 方法遍历 transformedArray，并将匹配的 oriData2 数据合并
     const finalData = transformedArray.map((item1) => {
       const matchedItem = dataFromContract.find((item2) => {
@@ -74,7 +72,7 @@ function App() {
       const res: any = await getNfts(marketAddress);
       const originalRes = await marketplace?.getAllMarketItems();
       const results = transformData(originalRes, res?.ownedNfts);
-      setMarketNftLists(results?.filter((item, index) => !item?.isSold));
+      setMarketNftLists(results);
     }
 
     if (walletAddress) {

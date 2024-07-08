@@ -6,14 +6,7 @@ import {
   convertHexToDecimal,
 } from '../../utils';
 
-function ItemCard({
-  item,
-  actionFunc,
-  buttonText,
-  ownerAddress,
-  personTitle,
-  isSell,
-}) {
+function ItemCard({ item, actionFunc, buttonText, ownerAddress, personTitle }) {
   const tokenId = hexToDecimal(item?.id?.tokenId || item?.tokenId?._hex || 0);
   const listingTime = convertHexToDecimal({
     _hex: item?.listingTimestamp?._hex,

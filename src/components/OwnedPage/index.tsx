@@ -13,13 +13,31 @@ export default function OwnedPage({
   erc20Contract,
   setIsLoading,
   address,
+  marketNftLists,
 }: any) {
   const [isShow, setIsShow] = useState(false);
   const [currentTokenId, setCurrentTokenId] = useState<string | null>(null);
+  const [currentItem, setCurrentItem] = useState<any>({});
+  const marketplaceItems =
+    marketNftLists?.filter(
+      (item) => item?.seller.toLowerCase() === address.toLowerCase()
+    ) || [];
+  const showList = [...userNftLists, ...marketplaceItems];
+  console.log('showList', showList);
 
   const listingNFT = async (listingPrice) => {
     try {
       setIsLoading(true);
+
+      if (!currentItem?.isUpForSale && currentItem?.exists) {
+        const createSale = await marketplace.createSale(
+          currentItem?.itemId,
+          true,
+          listingPrice
+        );
+        await createSale.wait();
+        return;
+      }
 
       const isApprovalForAll = await nft.isApprovedForAll(
         address,
@@ -77,9 +95,9 @@ export default function OwnedPage({
 
   return (
     <>
-      {userNftLists?.length > 0 ? (
+      {showList?.length > 0 ? (
         <div className='item-list-wrap'>
-          {userNftLists?.map((v, i) => {
+          {showList?.map((v, i) => {
             if (v?.contract?.address !== nft.address.toLowerCase()) {
               return null;
             }
@@ -91,8 +109,9 @@ export default function OwnedPage({
                   actionFunc={() => {
                     setIsShow(true);
                     setCurrentTokenId(hexToDecimal(v?.id?.tokenId));
+                    setCurrentItem(v);
                   }}
-                  buttonText={'Sell'}
+                  buttonText={v.isUpForSale ? 'unList' : 'List'}
                   ownerAddress={address}
                   personTitle={'Owner'}
                 />

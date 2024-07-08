@@ -47,26 +47,47 @@ export default function Home({
     }
   };
 
+  const onUnlist = async (itemId) => {
+    try {
+      setIsLoading(true);
+      const unlistTransaction = await marketplace.unlistNFT(
+        Number(BigNumber.from(itemId._hex).toString())
+      );
+      await unlistTransaction.wait();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+      location.reload();
+    }
+  };
+
   return (
     <>
-      {marketNftLists?.length > 0 ? (
+      {marketNftLists?.filter(
+        (item, index) => !item?.isSold && item?.isUpForSale
+      )?.length > 0 ? (
         <div className='item-list-wrap'>
-          {marketNftLists?.map((v, i) => (
-            <div key={i}>
-              <ItemCard
-                item={v}
-                buttonText={
-                  v.seller === address && v.isUpForSale ? 'unList' : 'Buy'
-                }
-                actionFunc={() => {
-                  onBuy(v?.id?.tokenId, v?.metadata?.price);
-                }}
-                personTitle={'Seller'}
-                ownerAddress={v.seller}
-                isSell={v.seller === address && v.isUpForSale}
-              />
-            </div>
-          ))}
+          {marketNftLists?.map((v, i) => {
+            const isSell = v.seller === address && v.isUpForSale;
+            console.log('v', v);
+
+            return (
+              <div key={i}>
+                <ItemCard
+                  item={v}
+                  buttonText={isSell ? 'unList' : 'Buy'}
+                  actionFunc={() => {
+                    isSell
+                      ? onUnlist(v.itemId)
+                      : onBuy(v?.id?.tokenId, v?.metadata?.price);
+                  }}
+                  personTitle={'Seller'}
+                  ownerAddress={v.seller}
+                />
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div>nothing here ...</div>
