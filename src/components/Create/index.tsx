@@ -6,6 +6,7 @@ const Create = ({ nft, setIsLoading }: any) => {
   const [price, setPrice] = useState<any>();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [nftContractValue, setNftContractValue] = useState('');
 
   const uploadToIPFS = async (event) => {
     event.preventDefault();
@@ -96,6 +97,12 @@ const Create = ({ nft, setIsLoading }: any) => {
       <div className='create-form-input-wrap'>
         <input type='file' name='file' onChange={uploadToIPFS} />
         {image && <img src={image} className='create-nft-img' />}
+        <input
+          type='text'
+          onChange={(e) => setNftContractValue(e.target.value)}
+          placeholder='NFT Contract'
+          value={nftContractValue}
+        />
         <input
           onChange={(e) => setName(e.target.value)}
           type='text'

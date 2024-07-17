@@ -118,10 +118,8 @@ function App() {
               element={
                 <Home
                   marketplace={marketplace}
-                  nft={nft}
                   erc20Contract={erc20Contract}
                   marketNftLists={marketNftLists}
-                  userNftLists={userNftLists}
                   address={address}
                 />
               }

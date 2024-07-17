@@ -7,9 +7,7 @@ import { hexToDecimal } from '../../utils';
 import './index.scss';
 
 export default function Home({
-  userNftLists,
   marketNftLists,
-  nft,
   marketplace,
   erc20Contract,
   address,

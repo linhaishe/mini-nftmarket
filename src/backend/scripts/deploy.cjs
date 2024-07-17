@@ -18,10 +18,7 @@ async function main() {
   console.log('_erc20Token', _erc20Token.address);
   console.log('_NFT', _NFT.address);
 
-  const _Marketplace = await Marketplace.deploy(
-    _NFT.address,
-    _erc20Token.address
-  );
+  const _Marketplace = await Marketplace.deploy(_erc20Token.address);
   console.log('_Marketplace', _Marketplace.address);
 
   // Save copies of each contracts abi and address to the frontend.
