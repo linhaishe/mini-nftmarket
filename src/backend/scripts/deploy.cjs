@@ -7,7 +7,7 @@ async function main() {
   console.log('Account balance:', (await deployer.getBalance()).toString());
 
   // Get the ContractFactories and Signers here.
-  const erc20Token = await ethers.getContractFactory('SadMonkey');
+  const erc20Token = await ethers.getContractFactory('ZeroEgg');
   const NFT = await ethers.getContractFactory('NFTM');
   const Marketplace = await ethers.getContractFactory('Market');
 
@@ -22,7 +22,7 @@ async function main() {
   console.log('_Marketplace', _Marketplace.address);
 
   // Save copies of each contracts abi and address to the frontend.
-  saveFrontendFiles(_erc20Token, 'SadMonkey');
+  saveFrontendFiles(_erc20Token, 'ZeroEgg');
   saveFrontendFiles(_NFT, 'NFTM');
   saveFrontendFiles(_Marketplace, 'Market');
 }

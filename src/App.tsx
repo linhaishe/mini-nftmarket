@@ -6,8 +6,8 @@ import MarketAbi from './backend/contractsData/Market.json';
 import MarketAddress from './backend/contractsData/Market-address.json';
 import NFTMAbi from './backend/contractsData/NFTM.json';
 import NFTMAddress from './backend/contractsData/NFTM-address.json';
-import SadMonkeyAbi from './backend/contractsData/SadMonkey.json';
-import SadMonkeyAddress from './backend/contractsData/SadMonkey-address.json';
+import ZeroEggAbi from './backend/contractsData/ZeroEgg.json';
+import ZeroEggAddress from './backend/contractsData/ZeroEgg-address.json';
 import { getNfts } from './utils';
 import Nav from './components/Nav';
 import Home from './components/Home';
@@ -16,6 +16,7 @@ import OwnedPage from './components/OwnedPage';
 import Loading from './components/Loading';
 
 import './App.css';
+import ListingPage from './components/ListingPage';
 
 function App() {
   const { address } = useAccount();
@@ -92,8 +93,8 @@ function App() {
     );
     const nft = new ethers.Contract(NFTMAddress.address, NFTMAbi.abi, signer);
     const erc20 = new ethers.Contract(
-      SadMonkeyAddress.address,
-      SadMonkeyAbi.abi,
+      ZeroEggAddress.address,
+      ZeroEggAbi.abi,
       signer
     );
     setMarketplace(marketplace);
@@ -109,7 +110,7 @@ function App() {
     <BrowserRouter>
       <div className='App'>
         <>
-          <Nav />
+          <Nav address={address} />
         </>
         <div>
           <Routes>
@@ -125,17 +126,6 @@ function App() {
               }
             />
             <Route
-              path='/create'
-              element={
-                <Create
-                  marketplace={marketplace}
-                  nft={nft}
-                  erc20Contract={erc20Contract}
-                  setIsLoading={setIsLoading}
-                />
-              }
-            />
-            <Route
               path='/owned'
               element={
                 <OwnedPage
@@ -145,6 +135,29 @@ function App() {
                   userNftLists={userNftLists}
                   marketNftLists={marketNftLists}
                   address={address}
+                  setIsLoading={setIsLoading}
+                />
+              }
+            />
+            <Route
+              path='/listing'
+              element={
+                <ListingPage
+                  marketplace={marketplace}
+                  nft={nft}
+                  erc20Contract={erc20Contract}
+                  setIsLoading={setIsLoading}
+                  address={address}
+                />
+              }
+            />
+            <Route
+              path='/create'
+              element={
+                <Create
+                  marketplace={marketplace}
+                  nft={nft}
+                  erc20Contract={erc20Contract}
                   setIsLoading={setIsLoading}
                 />
               }

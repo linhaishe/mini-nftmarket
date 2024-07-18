@@ -6,7 +6,6 @@ const Create = ({ nft, setIsLoading }: any) => {
   const [price, setPrice] = useState<any>();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [nftContractValue, setNftContractValue] = useState('');
 
   const uploadToIPFS = async (event) => {
     event.preventDefault();
@@ -94,15 +93,11 @@ const Create = ({ nft, setIsLoading }: any) => {
 
   return (
     <div className='create-form-wrap'>
+      <div>这个创建页面简单的做一个nft的创建，用于处理图片等信息的上传。</div>
+      <div>仅针对nft owner 展示</div>
       <div className='create-form-input-wrap'>
         <input type='file' name='file' onChange={uploadToIPFS} />
         {image && <img src={image} className='create-nft-img' />}
-        <input
-          type='text'
-          onChange={(e) => setNftContractValue(e.target.value)}
-          placeholder='NFT Contract'
-          value={nftContractValue}
-        />
         <input
           onChange={(e) => setName(e.target.value)}
           type='text'

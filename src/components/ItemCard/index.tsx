@@ -12,6 +12,8 @@ function ItemCard({ item, actionFunc, buttonText, ownerAddress, personTitle }) {
     _hex: item?.listingTimestamp?._hex,
   });
 
+  console.log('item', item);
+
   return (
     <div className='item-wrap'>
       <img
@@ -52,6 +54,11 @@ function ItemCard({ item, actionFunc, buttonText, ownerAddress, personTitle }) {
           {buttonText}
         </div>
       </div>
+      {item?.contract?.address && (
+        <div className='item-card-nft-address'>
+          NFTAddr: {item?.contract?.address}
+        </div>
+      )}
       {item?.metadata?.createTime && (
         <div className='item-card-create-time'>
           Create: {timestampToLocalTime(item?.metadata?.createTime)}

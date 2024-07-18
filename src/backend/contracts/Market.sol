@@ -8,10 +8,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-/*
-Marketplace contract 
-*/
-
 contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
@@ -195,6 +191,35 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
         }
         revert("Market item not found");
     }
+
+        function getMarketItemByTokenIdAndAddress(
+        uint256 tokenId,
+        address nftContractAddress
+    ) public view returns (MarketItem memory) {
+        uint256 itemCount = _itemIds.current();
+        for (uint256 i = 0; i < itemCount; i++) {
+            uint256 currentId = i + 1;
+            MarketItem memory item = idToMarketItem[currentId];
+            if (item.tokenId == tokenId && item.nftContract == nftContractAddress) {
+                return item;
+            }
+        }
+        // 返回一个空的MarketItem结构
+        return MarketItem({
+            itemId: 0,
+            tokenId: 0,
+            seller: address(0),
+            owner: address(0),
+            price: 0,
+            isSold: false,
+            isUpForSale: false,
+            exists: false,
+            createdTimestamp: 0,
+            listingTimestamp: 0,
+            nftContract: address(0)
+        });
+    }
+}
 
     function getUnsoldItems() public view returns (MarketItem[] memory) {
         uint256 itemCount = _itemIds.current();
