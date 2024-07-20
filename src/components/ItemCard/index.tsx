@@ -41,7 +41,7 @@ function ItemCard({ item, actionFunc, buttonText, ownerAddress, personTitle }) {
       <div className='item-card-price-info-wrap'>
         <div className='item-card-price-info'>
           <div className='item-card-price-info-price'>
-            {item?.metadata?.price || 0}
+            {hexToDecimal(item?.price?._hex) || 0}
           </div>
           <div className='item-card-price-info-title'>Price</div>
         </div>
@@ -53,9 +53,9 @@ function ItemCard({ item, actionFunc, buttonText, ownerAddress, personTitle }) {
           {buttonText}
         </div>
       </div>
-      {item?.contract?.address && (
+      {item?.nftContract && (
         <div className='item-card-nft-address'>
-          NFTAddr: {item?.contract?.address}
+          NFTAddr: {item?.nftContract}
         </div>
       )}
       {item?.metadata?.createTime && (
