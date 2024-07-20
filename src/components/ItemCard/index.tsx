@@ -1,18 +1,17 @@
 import React from 'react';
-import './index.scss';
 import {
   hexToDecimal,
   timestampToLocalTime,
   convertHexToDecimal,
 } from '../../utils';
 
+import './index.scss';
+
 function ItemCard({ item, actionFunc, buttonText, ownerAddress, personTitle }) {
   const tokenId = hexToDecimal(item?.id?.tokenId || item?.tokenId?._hex || 0);
   const listingTime = convertHexToDecimal({
     _hex: item?.listingTimestamp?._hex,
   });
-
-  console.log('item', item);
 
   return (
     <div className='item-wrap'>
@@ -50,7 +49,7 @@ function ItemCard({ item, actionFunc, buttonText, ownerAddress, personTitle }) {
           <div className='item-card-price-info-price'>{tokenId}</div>
           <div className='item-card-price-info-title'>tokenId</div>
         </div>
-        <div className='action-btn' onClick={actionFunc}>
+        <div className='action-btn' onClick={() => actionFunc(item)}>
           {buttonText}
         </div>
       </div>

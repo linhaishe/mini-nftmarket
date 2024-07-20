@@ -98,7 +98,7 @@ function App() {
       signer
     );
     setMarketplace(marketplace);
-    setNFT(nft);
+    setNFT(nft); // set nft address only for create NFT
     setErc20Contract(erc20);
   }, []);
 
@@ -129,13 +129,11 @@ function App() {
               path='/owned'
               element={
                 <OwnedPage
-                  marketplace={marketplace}
-                  erc20Contract={erc20Contract}
-                  nft={nft}
                   userNftLists={userNftLists}
+                  marketplace={marketplace}
+                  setIsLoading={setIsLoading}
                   marketNftLists={marketNftLists}
                   address={address}
-                  setIsLoading={setIsLoading}
                 />
               }
             />
@@ -144,7 +142,6 @@ function App() {
               element={
                 <ListingPage
                   marketplace={marketplace}
-                  nft={nft}
                   erc20Contract={erc20Contract}
                   setIsLoading={setIsLoading}
                   address={address}
@@ -153,14 +150,7 @@ function App() {
             />
             <Route
               path='/create'
-              element={
-                <Create
-                  marketplace={marketplace}
-                  nft={nft}
-                  erc20Contract={erc20Contract}
-                  setIsLoading={setIsLoading}
-                />
-              }
+              element={<Create nft={nft} setIsLoading={setIsLoading} />}
             />
           </Routes>
         </div>

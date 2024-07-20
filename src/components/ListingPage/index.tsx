@@ -45,10 +45,6 @@ const ListingPage = ({
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const nftContract = new ethers.Contract(nftAddress, contractAbi, signer);
-      console.log('address', address);
-      console.log('marketplace.address', marketplace.address);
-      console.log('nftContract', nftContract);
-      console.log('nftContract.address', nftContract.address);
 
       const isApprovalForAll = await nftContract?.isApprovedForAll(
         address,
@@ -69,15 +65,7 @@ const ListingPage = ({
         marketplace.address
       );
 
-      if (
-        Number(BigNumber.from(allowance._hex).toString()) < Number(listingPrice)
-      ) {
-        console.log(
-          ' Number(BigNumber.from(allowance._hex).toString()) < Number(listingPrice)',
-          Number(BigNumber.from(allowance._hex).toString()) <
-            Number(listingPrice)
-        );
-
+      if (BigNumber.from(allowance).lt(BigNumber.from(listingPrice))) {
         const approve = await erc20Contract.approve(
           marketplace.address,
           listingPrice
@@ -87,7 +75,7 @@ const ListingPage = ({
       }
 
       let itemInfo;
-      // tokenId不具有唯一性，查询应该增加nftContract的条件 hack 暂时这样处理
+      // tokenId不具有唯一性，查询应该增加nftContract的条件 hack 暂缓处理 todo
       itemInfo = await getMarketItemByTokenId(marketplace, tokenId);
 
       if (!itemInfo?.exists) {
@@ -131,7 +119,7 @@ const ListingPage = ({
         <input
           onChange={(e) => setListingPrice(e.target.value)}
           type='text'
-          placeholder='listing Price (in erc20 token)'
+          placeholder='Listing Price (in erc20 token)'
           value={listingPrice}
         />
         <input
