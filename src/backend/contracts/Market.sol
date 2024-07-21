@@ -108,8 +108,44 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
         emit MarketItemCreated(itemId, tokenId, msg.sender, address(0), price);
     }
 
-    // only valid when the nft owner is market,when the nft is sold, the owner is not the market
+    // 如果售出后，新拥有者想要再上架, 重新做授权
+    function relistAfterBuy(
+        uint256 itemId,
+        uint256 newPrice
+    ) public nonReentrant {
+        MarketItem memory item = idToMarketItem[itemId];
 
+        idToMarketItem[itemId] = MarketItem(
+            itemId,
+            item.tokenId,
+            msg.sender,
+            address(this),
+            newPrice,
+            false,
+            true,
+            true,
+            block.timestamp,
+            block.timestamp,
+            item.nftContract
+        );
+
+        IERC721(item.nftContract).safeTransferFrom(
+            msg.sender,
+            address(this),
+            item.tokenId
+        );
+
+        emit MarketItemCreated(
+            itemId,
+            item.tokenId,
+            msg.sender,
+            address(0),
+            newPrice
+        );
+    }
+
+    // only valid when the nft owner is market,when the nft is sold, the owner is not the market
+    // !isSold的情况下才能做上下架的操作
     function createSale(
         uint256 itemId,
         bool changePrice,
@@ -122,7 +158,6 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
 
         idToMarketItem[itemId].isUpForSale = true;
         idToMarketItem[itemId].listingTimestamp = block.timestamp; // 设置上架时间
-        idToMarketItem[itemId].isSold = false;
         if (changePrice) idToMarketItem[itemId].price = newPrice;
 
         emit MarketItemUpForSale(
@@ -158,7 +193,6 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
         bool isUpForSale = item.isUpForSale;
         require(isUpForSale == true, "NFT not for sale.");
 
-        address prevOwner = item.owner;
         address seller = item.seller;
 
         item.owner = msg.sender;
@@ -167,7 +201,7 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
         item.isUpForSale = false;
 
         IERC721(item.nftContract).safeTransferFrom(
-            prevOwner,
+            address(this),
             msg.sender,
             tokenId
         );

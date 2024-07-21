@@ -12,6 +12,7 @@ export default function Home({
   address,
 }: any) {
   const [isLoading, setIsLoading] = useState(false);
+  console.log('marketNftLists', marketNftLists);
 
   const onBuy = async (itemId, listingPrice) => {
     try {

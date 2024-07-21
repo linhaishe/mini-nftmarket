@@ -16,10 +16,11 @@ export default function OwnedPage({
   const [isShow, setIsShow] = useState(false);
   const [currentItem, setCurrentItem] = useState<any>({});
   const [itemId, setItemId] = useState<any>({});
-  const marketplaceItems =
+  const ownedItems =
     marketNftLists?.filter(
       (item) => item?.seller?.toLowerCase() === address?.toLowerCase()
     ) || [];
+  console.log('ownedItems', ownedItems);
 
   const onList = async (listingPrice) => {
     try {
@@ -62,12 +63,17 @@ export default function OwnedPage({
         await approve.wait();
       }
 
+      if (currentItem.isSold) {
+        const reList = await marketplace.relistAfterBuy(itemId, listingPrice);
+        await reList.wait();
+        return;
+      }
+
       const createSale = await marketplace.createSale(
         currentItem.itemId,
         true,
         listingPrice
       );
-
       await createSale.wait();
     } catch (error) {
       console.log('error', error);
@@ -98,9 +104,9 @@ export default function OwnedPage({
 
   return (
     <>
-      {marketplaceItems?.length > 0 ? (
+      {ownedItems?.length > 0 ? (
         <div className='item-list-wrap'>
-          {marketplaceItems?.map((v, i) => {
+          {ownedItems?.map((v, i) => {
             return (
               <div key={i}>
                 <ItemCard
