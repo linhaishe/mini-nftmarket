@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import ItemCard from '../ItemCard';
 import ListToast from '../ListToast';
+import { BigNumber, ethers } from 'ethers';
+import { getContractAbi } from '../../utils';
 
 import './index.scss';
 
@@ -9,6 +11,7 @@ export default function OwnedPage({
   setIsLoading,
   address,
   marketNftLists,
+  erc20Contract,
 }: any) {
   const [isShow, setIsShow] = useState(false);
   const [currentItem, setCurrentItem] = useState<any>({});
@@ -21,15 +24,53 @@ export default function OwnedPage({
   const onList = async (listingPrice) => {
     try {
       setIsLoading(true);
+
+      const contractAbi = await getContractAbi(currentItem.nftContract);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const nftContract = new ethers.Contract(
+        currentItem.nftContract,
+        contractAbi,
+        signer
+      );
+
+      const isApprovalForAll = await nftContract?.isApprovedForAll(
+        address,
+        marketplace.address
+      );
+
+      const allowance = await erc20Contract?.allowance(
+        address,
+        marketplace.address
+      );
+
+      if (!isApprovalForAll) {
+        // set approval for all to market through nft contract
+        const approvalTransaction = await nftContract?.setApprovalForAll(
+          marketplace.address,
+          true
+        );
+        await approvalTransaction.wait();
+      }
+
+      if (BigNumber.from(allowance).lt(BigNumber.from(listingPrice))) {
+        const approve = await erc20Contract.approve(
+          marketplace.address,
+          listingPrice
+        );
+
+        await approve.wait();
+      }
+
       const createSale = await marketplace.createSale(
-        itemId,
+        currentItem.itemId,
         true,
         listingPrice
       );
 
       await createSale.wait();
     } catch (error) {
-      alert(error);
+      console.log('error', error);
     } finally {
       location.reload();
       setIsLoading(false);

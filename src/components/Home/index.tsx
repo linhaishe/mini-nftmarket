@@ -38,7 +38,7 @@ export default function Home({
       const buyTransaction = await marketplace.buyItem(itemId);
       await buyTransaction.wait();
     } catch (error) {
-      alert(error);
+      console.log(error);
     } finally {
       setIsLoading(false);
       location.reload();

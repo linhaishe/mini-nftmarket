@@ -84,7 +84,6 @@ const Create = ({ nft, setIsLoading }: any) => {
       setPrice('');
       setImage('');
     } catch (error) {
-      alert(error);
       console.log('error', error);
     } finally {
       setIsLoading(false);

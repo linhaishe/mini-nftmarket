@@ -104,6 +104,7 @@ function App() {
                   setIsLoading={setIsLoading}
                   marketNftLists={marketNftLists}
                   address={address}
+                  erc20Contract={erc20Contract}
                 />
               }
             />

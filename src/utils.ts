@@ -83,7 +83,7 @@ export function transformData(dataFromContract) {
   return transformedArray;
 }
 
-const getContractAbi = async (contractAddress) => {
+export const getContractAbi = async (contractAddress) => {
   const response = await fetch(
     `https://api-sepolia.etherscan.io/api?module=contract&action=getabi&address=${contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY}`
   );

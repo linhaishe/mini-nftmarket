@@ -108,6 +108,8 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
         emit MarketItemCreated(itemId, tokenId, msg.sender, address(0), price);
     }
 
+    // only valid when the nft owner is market,when the nft is sold, the owner is not the market
+
     function createSale(
         uint256 itemId,
         bool changePrice,
@@ -120,13 +122,14 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
 
         idToMarketItem[itemId].isUpForSale = true;
         idToMarketItem[itemId].listingTimestamp = block.timestamp; // 设置上架时间
+        idToMarketItem[itemId].isSold = false;
         if (changePrice) idToMarketItem[itemId].price = newPrice;
 
         emit MarketItemUpForSale(
             itemId,
             item.tokenId,
             msg.sender,
-            item.seller,
+            address(this),
             idToMarketItem[itemId].price
         );
     }
@@ -143,7 +146,7 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
             itemId,
             item.tokenId,
             msg.sender,
-            item.seller,
+            address(this),
             idToMarketItem[itemId].price
         );
     }
@@ -179,20 +182,7 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
         return idToMarketItem[marketItemId];
     }
 
-    function getMarketItemByTokenId(
-        uint256 tokenId
-    ) public view returns (MarketItem memory) {
-        uint256 itemCount = _itemIds.current();
-        for (uint256 i = 0; i < itemCount; i++) {
-            uint256 currentId = i + 1;
-            if (idToMarketItem[currentId].tokenId == tokenId) {
-                return idToMarketItem[currentId];
-            }
-        }
-        revert("Market item not found");
-    }
-
-        function getMarketItemByTokenIdAndAddress(
+    function getMarketItemByTokenIdAndAddress(
         uint256 tokenId,
         address nftContractAddress
     ) public view returns (MarketItem memory) {
@@ -200,26 +190,29 @@ contract Market is Ownable, ReentrancyGuard, IERC721Receiver {
         for (uint256 i = 0; i < itemCount; i++) {
             uint256 currentId = i + 1;
             MarketItem memory item = idToMarketItem[currentId];
-            if (item.tokenId == tokenId && item.nftContract == nftContractAddress) {
+            if (
+                item.tokenId == tokenId &&
+                item.nftContract == nftContractAddress
+            ) {
                 return item;
             }
         }
         // 返回一个空的MarketItem结构
-        return MarketItem({
-            itemId: 0,
-            tokenId: 0,
-            seller: address(0),
-            owner: address(0),
-            price: 0,
-            isSold: false,
-            isUpForSale: false,
-            exists: false,
-            createdTimestamp: 0,
-            listingTimestamp: 0,
-            nftContract: address(0)
-        });
+        return
+            MarketItem({
+                itemId: 0,
+                tokenId: 0,
+                seller: address(0),
+                owner: address(0),
+                price: 0,
+                isSold: false,
+                isUpForSale: false,
+                exists: false,
+                createdTimestamp: 0,
+                listingTimestamp: 0,
+                nftContract: address(0)
+            });
     }
-}
 
     function getUnsoldItems() public view returns (MarketItem[] memory) {
         uint256 itemCount = _itemIds.current();

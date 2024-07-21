@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
+import { getContractAbi } from '../../utils';
 
 import './index.scss';
 
@@ -13,17 +14,12 @@ const ListingPage = ({
   const [nftAddress, setNftAddress] = useState<any>('');
   const [listingPrice, setListingPrice] = useState<any>('');
 
-  const getContractAbi = async (contractAddress) => {
-    const response = await fetch(
-      `https://api-sepolia.etherscan.io/api?module=contract&action=getabi&address=${contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY}`
-    );
-    const data = await response.json();
-    return data.result;
-  };
-
-  const getMarketItemByTokenId = async (contract, tokenId) => {
+  const getMarketItemByTokenId = async (tokenId, nftContract) => {
     try {
-      const marketItem = await contract.getMarketItemByTokenId(tokenId);
+      const marketItem = await marketplace.getMarketItemByTokenIdAndAddress(
+        tokenId,
+        nftContract
+      );
       return marketItem;
     } catch (error: any) {
       console.error('Market item not found:', error.message);
@@ -75,19 +71,20 @@ const ListingPage = ({
       }
 
       let itemInfo;
-      // tokenId不具有唯一性，查询应该增加nftContract的条件 hack 暂缓处理 todo
-      itemInfo = await getMarketItemByTokenId(marketplace, tokenId);
+      itemInfo = await getMarketItemByTokenId(tokenId, nftAddress);
+      console.log('itemInfo33', itemInfo);
 
       if (!itemInfo?.exists) {
         const addItemToMarket = await marketplace.addItemToMarket(
           tokenId,
           listingPrice,
-          nftContract.address
+          nftAddress
         );
         await addItemToMarket.wait();
-        itemInfo = await getMarketItemByTokenId(marketplace, tokenId);
+        itemInfo = await getMarketItemByTokenId(tokenId, nftAddress);
       }
 
+      console.log('itemInfo44', itemInfo);
       const createSale = await marketplace.createSale(
         itemInfo?.itemId,
         true,
@@ -95,7 +92,6 @@ const ListingPage = ({
       );
       await createSale.wait();
     } catch (error) {
-      alert(error);
       console.log('error', error);
     } finally {
       setIsLoading(false);
